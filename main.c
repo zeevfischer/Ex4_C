@@ -13,11 +13,23 @@ int main()
         if (input == 'A')
         {
             build_graph_cmd(P_head);
+            // printf("\n");
+            // printf("print\n");
+            // printGraph_cmd(*P_head);
         }
         else if (input == 'D')
         {
             delete_node_cmd(P_head);
-        
+            // printf("\n");
+            // printf("print\n");
+            // printGraph_cmd(*P_head);
+        }
+        else if(input == 'B')
+        {
+            insert_node_cmd(P_head);
+            // printf("\n");
+            // printf("print\n");
+            // printGraph_cmd(*P_head);
         }
         else if(input == 'S') 
         {

@@ -292,6 +292,10 @@ int shortsPath_cmd(pnode head,int src,int end_dest)
         // this will start the queue with the first Node
         cur = GetNode(head,src);
         pedge Edges = cur->edges;
+        if(Edges == NULL)
+        {
+            return -1;
+        }
         queue = newNode(cur->node_num,Edges->endpoint->node_num,Edges->weight);
         Edges->endpoint->weight = Edges->weight;
         Edges->endpoint->tag = src;
@@ -377,43 +381,81 @@ int shortsPath_cmd(pnode head,int src,int end_dest)
 
 void TSP_cmd(pnode head)
 {
+    int final_sum =__INT_MAX__;
     int sum = 0;
     int size;
     scanf("%d",&size);
     int* citys = (int*)malloc(size *(sizeof(int)));
+    int* copy = (int*)malloc(size *(sizeof(int)));
     for (int i = 0; i < size; i++)
     {
         scanf("%d",&citys[i]);
+        copy[i] = citys[i];
     }
-    
-    // pnode cur = GetNode(head,citys[0]);
-    for (int i = 0; i < size-1; i++)
-    {
-        sum += shortsPath_cmd(head,citys[i],citys[i+1]);
-    }
-    
-    // not max value but will do
-    // int min_dist = 1000000;
-    // int location = -1;
-    // for(int j = 0; j < size; j++)
+    // for (int j = 0; j < size-1; j++)
     // {
-    //     for (int i = 0; i < size; i++)
-    //     {
-    //         if(citys[i] != -1 && GetNode(head,citys[i])->node_num != cur->node_num)
-    //         {
-    //             int temp = shortsPath_cmd(head,cur->node_num,GetNode(head,citys[i])->node_num);
-    //             if(min_dist > temp)
-    //             {
-    //                 min_dist = temp;
-    //                 location = i;
-    //             }
-    //         }
-    //     }
-    //     cur = GetNode(head,citys[location]);
-    //     sum += min_dist;
-    //     citys[location]= -1 ;
-    //     min_dist = 10000000;
-    //     location = -1;
+    //     sum += shortsPath_cmd(head,citys[j],citys[j+1]);
     // }
-    printf("TSP shortest path: %d \n",sum);
+
+    int min_dist = __INT_MAX__;
+    int location = -1;
+    // bool indicator = false;
+    for(int k = 0; k < size; k++)
+    {
+        pnode cur = GetNode(head,citys[k]);
+        for(int j = 0; j < size-1; j++)
+        {
+            for (int i = 0; i < size; i++)
+            {
+                pnode city_node = GetNode(head,citys[i]);
+                if(citys[i] != -1 && city_node->node_num != cur->node_num)
+                {
+                    // printf("src = %d dest = %d \n",cur->node_num,city_node->node_num);
+                    int temp = shortsPath_cmd(head, cur->node_num, city_node->node_num);
+                    // printf("temp = %d\n",temp);
+                    if(temp == -1)
+                    {
+                        temp = __INT_MAX__;
+                    }
+                    if(min_dist > temp)
+                    {
+                        min_dist = temp;
+                        location = i;
+                    }
+                }
+            }
+            cur = GetNode(head,citys[location]);
+            if(min_dist != __INT_MAX__ && sum != __INT_MAX__)
+            {
+                // printf("min_dist = %d\n",min_dist);
+                sum += min_dist;
+            }
+            else
+            {
+                sum = __INT_MAX__;
+            }
+            if(location != -1)
+            {
+                citys[location] = -1;
+            }
+            min_dist = __INT_MAX__;
+            location = -1;
+        }
+        for (int e = 0; e < size; e++)
+        {
+            citys[e] = copy[e];
+        }
+        // printf("sum = %d\n",sum);
+        if(final_sum>sum)
+        {
+            final_sum = sum;
+        }
+        // printf("final_sum = %d\n",final_sum);
+        sum = 0;
+    }
+    if(final_sum == __INT_MAX__)
+    {
+        final_sum = -1;
+    }
+    printf("TSP shortest path: %d \n",final_sum);
 }
