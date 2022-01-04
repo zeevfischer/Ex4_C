@@ -457,5 +457,7 @@ void TSP_cmd(pnode head)
     {
         final_sum = -1;
     }
+    free(copy);
+    free(citys);
     printf("TSP shortest path: %d \n",final_sum);
 }
